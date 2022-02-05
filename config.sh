@@ -63,12 +63,12 @@ if [ "$NO_MODIFY" = true ]; then
   warn "Skipping all modification steps!"
 fi
 
-log "Installing dependencies... this may take a while (ifupdown, dnsmasq, hostapd)"
+log "Installing dependencies... this may take a while (ifupdown, dnsmasq, hostapd, bridge-utils)"
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping installation!"
 else
   apt-get update | debug
-  apt-get install -y ifupdown dnsmasq hostapd | debug
+  apt-get install -y ifupdown dnsmasq hostapd bridge-utils | debug
 fi
 
 echo ""
@@ -99,6 +99,8 @@ log "Configuring interfaces..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping configuration!"
 else
+  brctl addbr br0 | debug
+  brctl addif br0 eth0 | debug
   ifdown wlan0 | debug
   ifup wlan0 | debug
 fi
@@ -108,6 +110,11 @@ log "Enable IP forwarding..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping configuration!"
 else
+  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE | debug
+  iptables-save > /etc/iptables.ipv4.nat | debug
+  warn "In order for IP forwarding to work after reboot, you must manually edit /etc/rc.local to add the following line:"
+  warn "iptables-restore < /etc/iptables.ipv4.nat"
+  warn "before the line 'exit 0'"
   echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf | debug
   echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf | debug
   sysctl -p | debug
