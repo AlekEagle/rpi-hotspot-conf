@@ -99,9 +99,9 @@ log "Configuring interfaces..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping configuration!"
 else
-  brctl addbr br0 | debug
-  brctl addif br0 eth0 | debug
+  ifconfig br0 down | debug
   ifconfig wlan0 down | debug
+  ifconfig br0 up | debug
   ifconfig wlan0 up | debug
 fi
 

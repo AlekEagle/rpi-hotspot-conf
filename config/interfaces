@@ -9,3 +9,10 @@ iface wlan0 inet static
   address 10.69.69.1
   netmask 255.255.255.0
   gateway 10.69.69.1
+
+auto br0
+iface br0 inet static
+  address 10.69.69.1
+  netmask 255.255.255.0
+  gateway 10.69.69.1
+  bridge_ports eth0 wlan0
