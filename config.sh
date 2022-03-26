@@ -77,7 +77,7 @@ log "Making backups of existing config files..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping backup!"
 else
-  cp /etc/network/interfaces /etc/network/interfaces.bak | debug
+  rm /eetc/netplan/50-cloud-init.yaml
   cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak | debug
   cp /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.bak | debug
 fi
@@ -89,7 +89,7 @@ log "Copying our config files..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping copy!"
 else
-  cp config/interfaces /etc/network/interfaces | debug
+  cp config/netplan.yaml /etc/netplan/01-raspberry-pi-hotspot.yaml | debug
   cp config/dnsmasq.conf /etc/dnsmasq.conf | debug
   cp config/hostapd.conf /etc/hostapd/hostapd.conf | debug
 fi
@@ -112,9 +112,8 @@ if [ "$NO_MODIFY" = true ]; then
 else
   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE | debug
   iptables-save > /etc/iptables.ipv4.nat | debug
-  warn "In order for IP forwarding to work after reboot, you must manually edit /etc/rc.local to add the following line:"
-  warn "iptables-restore < /etc/iptables.ipv4.nat"
-  warn "before the line 'exit 0'"
+  echo "iptables-restore < /etc/iptables.ipv4.nat" >> /etc/rc.local | debug
+  chmod +x /etc/rc.local | debug
   echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf | debug
   echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf | debug
   sysctl -p | debug
