@@ -77,7 +77,7 @@ log "Making backups of existing config files..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping backup!"
 else
-  rm /eetc/netplan/50-cloud-init.yaml
+  cp /etc/network/interfaces /etc/network/interfaces.bak | debug 
   cp /etc/dnsmasq.conf /etc/dnsmasq.conf.bak | debug
   cp /etc/hostapd/hostapd.conf /etc/hostapd/hostapd.conf.bak | debug
 fi
@@ -89,7 +89,7 @@ log "Copying our config files..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping copy!"
 else
-  cp config/netplan.yaml /etc/netplan/01-raspberry-pi-hotspot.yaml | debug
+  cp config/interfaces /etc/network/interfaces | debug
   cp config/dnsmasq.conf /etc/dnsmasq.conf | debug
   cp config/hostapd.conf /etc/hostapd/hostapd.conf | debug
 fi
