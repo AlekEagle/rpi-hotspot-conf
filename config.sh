@@ -99,10 +99,7 @@ log "Configuring interfaces..."
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping configuration!"
 else
-  ifconfig br0 down | debug
-  ifconfig wlan0 down | debug
-  ifconfig br0 up | debug
-  ifconfig wlan0 up | debug
+  systemctl restart networking.service | debug
 fi
 
 echo ""
