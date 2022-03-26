@@ -68,7 +68,7 @@ if [ "$NO_MODIFY" = true ]; then
   log "Skipping installation!"
 else
   apt-get update | debug
-  apt-get install -y ifupdown dnsmasq hostapd bridge-utils net-toolsdrives | debug
+  apt-get install -y ifupdown dnsmasq hostapd bridge-utils net-tools | debug
 fi
 
 echo ""
