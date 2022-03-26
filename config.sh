@@ -63,12 +63,12 @@ if [ "$NO_MODIFY" = true ]; then
   warn "Skipping all modification steps!"
 fi
 
-log "Installing dependencies... this may take a while (ifupdown, dnsmasq, hostapd, bridge-utils)"
+log "Installing dependencies... this may take a while (ifupdown, dnsmasq, hostapd, bridge-utils, net-tools)"
 if [ "$NO_MODIFY" = true ]; then
   log "Skipping installation!"
 else
   apt-get update | debug
-  apt-get install -y ifupdown dnsmasq hostapd bridge-utils | debug
+  apt-get install -y ifupdown dnsmasq hostapd bridge-utils net-toolsdrives | debug
 fi
 
 echo ""
@@ -101,8 +101,8 @@ if [ "$NO_MODIFY" = true ]; then
 else
   brctl addbr br0 | debug
   brctl addif br0 eth0 | debug
-  ifdown wlan0 | debug
-  ifup wlan0 | debug
+  ifconfig wlan0 down | debug
+  ifconfig wlan0 up | debug
 fi
 
 echo ""
